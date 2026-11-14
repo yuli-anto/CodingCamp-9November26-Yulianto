@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Logic Tests — Expense & Budget Visualizer</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 760px; margin: 2rem auto; padding: 0 1rem; }
+    h1   { font-size: 1.3rem; }
+    #test-output strong { font-size: 1.1rem; }
+    #test-output ul { margin: 0.5rem 0; padding-left: 1.5rem; }
+    #test-output li { margin: 0.25rem 0; font-size: 0.9rem; }
+    #test-output small { opacity: 0.8; }
+  </style>
+</head>
+<body>
+  <h1>Expense &amp; Budget Visualizer — Logic Tests</h1>
+  <p>Open the browser console for detailed per-test output.</p>
+  <div id="test-output">Running tests…</div>
+
+  <!--
+    We load a minimal stub of localStorage so the app.js storage functions
+    don't blow up when they attempt to access the real localStorage
+    (which works fine in a browser anyway, but we want the pure logic
+    functions only — no side effects from INIT).
+  -->
+  <script>
+    // Prevent app.js from running its DOMContentLoaded init while we test
+    // by temporarily overriding addEventListener.
+    const _origAddEventListener = document.addEventListener.bind(document);
+    document.addEventListener = function(type, listener, options) {
+      if (type === 'DOMContentLoaded') return; // skip app init
+      _origAddEventListener(type, listener, options);
+    };
+  </script>
+
+  <!-- Load the production code so pure functions are available globally -->
+  <script src="../js/app.js"></script>
+
+  <!-- Restore addEventListener so other code (if any) can register normally -->
+  <script>
+    document.addEventListener = _origAddEventListener;
+  </script>
+
+  <!-- Run the pure-function test suite -->
+  <script src="./logic.test.js"></script>
+</body>
+</html>
